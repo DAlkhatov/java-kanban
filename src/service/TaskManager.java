@@ -1,20 +1,22 @@
 package service;
 
+import model.Status;
 import model.SubTask;
 import model.Task;
 import model.Epic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
 
-    int seq;
+    private int seq;
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, SubTask> subTasks;
 
     private int generateId() {
-        return seq++;
+        return ++seq;
     }
 
     public TaskManager() {
@@ -23,8 +25,30 @@ public class TaskManager {
         this.subTasks = new HashMap<>();
     }
 
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public void updateEpicStatus(Epic epic) {
+        int counterDone = 0;
+        int counterNew = 0;
+        Status status = Status.NEW;
+        for (int subTaskId : epic.getSubtaskId()) {
+            if (getSubtask(subTaskId).getStatus().equals(Status.DONE)) {
+                counterDone++;
+            } else if (getSubtask(subTaskId).getStatus().equals(Status.NEW)) {
+                counterNew++;
+            }
+            if (counterDone == epic.getSubtaskId().size()) {
+                status = Status.DONE;
+            } else if (counterNew == epic.getSubtaskId().size()) {
+                status = Status.NEW;
+            } else {
+                status = Status.IN_PROGRESS;
+            }
+        }
+        epic.setStatus(status);
+    }
+
+    public Object getTasks() {
+        ArrayList<Task> taskList = new ArrayList<>(tasks.values());
+        return taskList.clone();
     }
 
     public void clearTasks() {
@@ -46,7 +70,6 @@ public class TaskManager {
         if (saved == null) {
             return;
         }
-        task.setStatus(saved.getStatus());
         tasks.put(task.getId(), task);
     }
 
@@ -54,15 +77,17 @@ public class TaskManager {
         tasks.remove(id);
     }
 
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public Object getEpics() {
+        ArrayList<Epic> epicList = new ArrayList<>(epics.values());
+        return epicList.clone();
     }
 
     public void clearEpics() {
         for (Epic epic : epics.values()) {
-            for (SubTask s : epic.getSubTasks()) {
-                epic.removeSubtask(s);
-                s.setEpic(null);
+            for (int i : epic.getSubtaskId()) {
+                SubTask s = getSubtask(i);
+                epic.removeSubtaskId(i);
+                s.setEpicId(0);
             }
             epic.removeAllSubtasks();
         }
@@ -84,8 +109,9 @@ public class TaskManager {
         if (saved == null) {
             return;
         }
-        epic.setSubTasks(saved.getSubTasks());
+        epic.setSubtaskId(saved.getSubtaskId());
         epic.setStatus(saved.getStatus());
+        epic.setDescription(saved.getDescription());
         epics.put(epic.getId(), epic);
     }
 
@@ -94,13 +120,18 @@ public class TaskManager {
         epics.remove(id);
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subTasks;
+    public Object getSubTasks() {
+        ArrayList<SubTask> taskList = new ArrayList<>(subTasks.values());
+        return taskList.clone();
     }
 
     public void clearSubtasks() {
         for (SubTask s : subTasks.values()) {
-            s.getEpic().removeSubtask(s);
+            if (getEpic(s.getEpicId()) == null) {
+                break;
+            }
+            getEpic(s.getEpicId()).removeSubtaskId(s.getId());
+            updateEpicStatus(getEpic(s.getEpicId()));
         }
         subTasks.clear();
     }
@@ -120,12 +151,9 @@ public class TaskManager {
         if (saved == null) {
             return;
         }
-        subTask.setStatus(saved.getStatus());
+        subTask.setEpicId(saved.getEpicId());
         subTasks.put(subTask.getId(), subTask);
-
-        Epic epic = saved.getEpic();
-        epic.removeSubtask(saved);
-        epic.addSubtask(subTask);
+        updateEpicStatus(getEpic(saved.getEpicId()));
     }
 
     public void removeSubtask(int id) {
@@ -133,7 +161,11 @@ public class TaskManager {
             return;
         }
         SubTask saved = getSubtask(id);
-        saved.getEpic().removeSubtask(saved);
+        if (getEpic(saved.getEpicId()) == null) {
+            return;
+        }
+        getEpic(saved.getEpicId()).removeSubtaskId(id);
+        updateEpicStatus(getEpic(saved.getEpicId()));
         subTasks.remove(id);
     }
 

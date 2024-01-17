@@ -4,53 +4,31 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<SubTask> subTasks;
+    private ArrayList<Integer> subtaskId;
 
     public Epic(Status status, String name, String description) {
         super(status, name, description);
         setType("Epic");
-        subTasks = new ArrayList<>();
+        subtaskId = new ArrayList<>();
     }
 
-    public void updateStatus() {
-        int counterDone = 0;
-        int counterNew = 0;
-        for (SubTask subTask : subTasks) {
-            if (subTask.getStatus().equals(Status.DONE)) {
-                counterDone++;
-            } else if (subTask.getStatus().equals(Status.NEW)) {
-                counterNew++;
-            }
-            if (counterDone == subTasks.size()) {
-                setStatus(Status.DONE);
-            } else if (counterNew == subTasks.size()) {
-                setStatus(Status.NEW);
-            } else {
-                setStatus(Status.IN_PROGRESS);
-
-            }
-        }
+    public ArrayList<Integer> getSubtaskId() {
+        return subtaskId;
     }
 
-    public ArrayList<SubTask> getSubTasks() {
-        return subTasks;
+    public void setSubtaskId(ArrayList<Integer> subtaskId) {
+        this.subtaskId = subtaskId;
     }
 
-    public void setSubTasks(ArrayList<SubTask> subTasks) {
-        this.subTasks = subTasks;
+    public void addSubtaskId(int id) {
+        this.subtaskId.add(id);
     }
 
-    public void addSubtask(SubTask subTask) {
-        this.subTasks.add(subTask);
-        updateStatus();
-    }
-
-    public void removeSubtask(SubTask subTask) {
-        this.subTasks.remove(subTask);
-        updateStatus();
+    public void removeSubtaskId(int subtaskId) {
+        this.subtaskId.remove(subtaskId);
     }
 
     public void removeAllSubtasks() {
-        subTasks.clear();
+        subtaskId.clear();
     }
 }

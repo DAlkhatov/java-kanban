@@ -12,12 +12,12 @@ public class Main {
         Epic epic = new Epic(Status.NEW, "Epic", "");
         epic.setDescription("New description");
         System.out.println(epic);
-        SubTask subTask1 = new SubTask(Status.NEW, "Sub1", "Descr1", epic);
-        SubTask subTask2 = new SubTask(Status.DONE, "Sub2", "Descr2", epic);
-        epic.addSubtask(subTask1);
-        epic.addSubtask(subTask2);
-        System.out.println(epic.getSubTasks());
-        System.out.println(subTask1.getEpic() + "\n");
+        SubTask subTask1 = new SubTask(Status.NEW, "Sub1", "Descr1", epic.getId());
+        SubTask subTask2 = new SubTask(Status.DONE, "Sub2", "Descr2", epic.getId());
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+        System.out.println(epic.getSubtaskId());
+        System.out.println(subTask1.getEpicId() + "\n");
 
         System.out.println("Проверка логики сервиса в части создания словарей:");
         TaskManager taskManager = new TaskManager();
