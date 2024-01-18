@@ -7,7 +7,6 @@ public class Task {
     private Status status;
     private String name;
     private String description;
-    private String type = "Task";
 
     public Task(Status status, String name, String description) {
         this.status = status;
@@ -47,10 +46,6 @@ public class Task {
         this.description = description;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -69,7 +64,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return type + "{" +
+        return "Task{" +
                 "id=" + id +
                 ", status=" + status +
                 ", name='" + name + '\'' +
