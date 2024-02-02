@@ -29,6 +29,7 @@ public class Main {
 
         taskManager.clearSubtasks();
         System.out.println(taskManager.getSubtasks());
+        System.out.println(taskManager.getHistory());
     }
 
     private static void printAllTasks(TaskManager manager) {

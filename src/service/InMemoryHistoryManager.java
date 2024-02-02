@@ -15,7 +15,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (history.size() > 9) {
-            history.removeFirst();
+            history.remove(0); /* Начиная с этого модуля, по словам старшего наставника, мы начинаем работать в
+            21 версии Java. В данной версии Java у ArrayList есть метод removeFirst. */
         }
         if (task != null) {
             history.add(task);
@@ -25,5 +26,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public ArrayList<Task> getHistory() {
         return (ArrayList<Task>) history.clone();
+    }
+
+    public void removeFromHistory(Task task) {
+        history.remove(task);
     }
 }
