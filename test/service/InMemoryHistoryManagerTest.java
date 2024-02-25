@@ -7,47 +7,43 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
     static InMemoryTaskManager taskManager;
-    static Task task;
-    static Epic epic;
-    ArrayList<Task> tasks;
+    int quantity = 8;
 
     @BeforeEach
     void beforeAll() {
         taskManager = new InMemoryTaskManager();
-        task = new Task(Status.NEW, "Task", "Description of the Task");
-        taskManager.create(task);
-        epic = new Epic(Status.NEW, "Epic", "Description of the Epic");
-        taskManager.create(epic);
-        tasks = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            taskManager.getTask(task.getId());
-            tasks.add(task);
+        for (int i = 0; i < quantity; i++) {
+            int counter = i + 1;
+            if (i % 2 == 0) {
+                Task task = new Task(Status.NEW, "Task " + counter, "Description " + counter);
+                taskManager.create(task);
+                taskManager.getTask(task.getId());
+            } else {
+                Task task = new Epic(Status.NEW, "Epic " + counter, "Description of epic " + counter);
+                taskManager.create(task);
+                taskManager.getTask(task.getId());
+            }
         }
     }
 
-    @DisplayName("Должны быть возвращены одинаковые ArrayList<>")
+    @DisplayName("Должны быть возвращены одинаковые Значения")
     @Test
-    void shouldReturnEqualArrayLists() {
-        taskManager.getEpic(epic.getId());
-        tasks.add(epic);
-        assertEquals(tasks, taskManager.getHistory());
+    void shouldReturnEqualValues() {
+        taskManager.removeTask(5);
+        assertEquals(taskManager.getHistory().size() , quantity - 1);
     }
 
-    @DisplayName("Должны быть возвращены разные ArrayList<>")
+    @DisplayName("Должны быть возвращены одинаковые Task-объекты")
     @Test
-    void shouldReturnDifferentArrayLists() {
+    void shouldBeeEqualsTasks() {
+        Task task = new Task(Status.NEW, "New Task ", "New Description ");
+        taskManager.create(task);
         taskManager.getTask(task.getId());
-        taskManager.getEpic(epic.getId());
-        tasks.add(task);
-        tasks.add(epic);
-        assertNotEquals(tasks, taskManager.getHistory());
+        assertEquals(taskManager.getTask(task.getId()), taskManager.getHistory().getLast());
     }
-
 }
