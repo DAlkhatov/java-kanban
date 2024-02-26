@@ -1,8 +1,7 @@
-import model.Status;
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
-
 import service.InMemoryTaskManager;
 import service.TaskManager;
 
@@ -26,10 +25,17 @@ public class Main {
         taskManager.create(subTask2);
 
         printAllTasks(taskManager);
+        System.out.println();
+        //taskManager.clearSubtasks();
+        System.out.println(taskManager.getHistory());
 
-        taskManager.clearSubtasks();
         System.out.println(taskManager.getSubtasks());
         System.out.println(taskManager.getHistory());
+
+        taskManager.getTask(task.getId());
+        taskManager.getEpic(epic.getId());
+        System.out.println(taskManager.getHistory());
+
     }
 
     private static void printAllTasks(TaskManager manager) {

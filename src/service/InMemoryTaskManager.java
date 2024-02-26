@@ -87,6 +87,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasks == null) {
             return null;
         }
+        for (Task task : tasks.values()) {
+            historyManager.add(task);
+        }
         ArrayList<Task> taskList = new ArrayList<>(tasks.values());
         return (ArrayList<Task>) taskList.clone();
     }
@@ -133,6 +136,9 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Epic> getEpics() {
         if (epics == null) {
             return null;
+        }
+        for (Epic task : epics.values()) {
+            historyManager.add(task);
         }
         ArrayList<Epic> epicList = new ArrayList<>(epics.values());
         return (ArrayList<Epic>) epicList.clone();
@@ -192,6 +198,9 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<SubTask> getSubtasks() {
         if (subTasks == null) {
             return null;
+        }
+        for (SubTask task : subTasks.values()) {
+            historyManager.add(task);
         }
         ArrayList<SubTask> subtaskList = new ArrayList<>(subTasks.values());
         return (ArrayList<SubTask>) subtaskList.clone();

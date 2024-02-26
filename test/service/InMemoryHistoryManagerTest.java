@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
 
@@ -45,5 +45,25 @@ class InMemoryHistoryManagerTest {
         taskManager.create(task);
         taskManager.getTask(task.getId());
         assertEquals(taskManager.getTask(task.getId()), taskManager.getHistory().getLast());
+    }
+
+    @DisplayName("Размер списка историй просмотра должен сократиться на 1")
+    @Test
+    void shouldDecreaseByOne() {
+        taskManager.removeTask(quantity);
+        assertEquals(quantity - 1, taskManager.getHistory().size());
+    }
+
+    @DisplayName("Размер списка историй просмотра должен остаться неизменным")
+    @Test
+    void shouldRemainUnchanged() {
+        taskManager.getTasks();
+        assertEquals(quantity, taskManager.getHistory().size());
+    }
+
+    @DisplayName("Должен переместить первую задачу в конец списка")
+    @Test
+    void shouldMoveTheFirstTaskToTheEndOfTheList() {
+        assertEquals(taskManager.getTask(1), taskManager.getHistory().getLast());
     }
 }

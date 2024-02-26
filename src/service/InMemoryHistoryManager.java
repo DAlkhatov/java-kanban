@@ -37,38 +37,47 @@ public class InMemoryHistoryManager implements HistoryManager {
         return newNode;
     }
 
-    private void removeNode(Node node) {
-        if (history.isEmpty() || node == null)
+    private void removeNode(Node nodeForDel) {
+        if (nodeForDel == null)
             return;
-        Node prevNode = node.prev;
-        Node nextNode = node.next;
-        if (first == node)
+        Node prevNode = nodeForDel.prev;
+        Node nextNode = nodeForDel.next;
+        if ((first == nodeForDel) && (last == nodeForDel)) {
+            first = null;
+            last = null;
+        } else if (first == nodeForDel) {
             first = nextNode;
-        else if (last == node)
+            nextNode.prev = null;
+        } else if (last == nodeForDel) {
             last = prevNode;
-        if (node.prev != null)
-            node.prev.next = nextNode;
-        if (node.next != null)
-            node.next.prev = prevNode;
-        history.remove(node.item.getId());
+            prevNode.next = null;
+        }
+        if (nodeForDel.prev != null)
+            nodeForDel.prev.next = nextNode;
+        if (nodeForDel.next != null)
+            nodeForDel.next.prev = prevNode;
+        history.remove(nodeForDel.item.getId());
     }
 
     @Override
     public void add(Task task) {
-        Node node = linkLast(task);
         if (history.containsKey(task.getId())) {
-            removeNode(node);
+            remove(task.getId());
         }
+        Node node = linkLast(task);
         history.put(task.getId(), node);
     }
 
     @Override
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> values = new ArrayList<>();
-        for (Node node : history.values()) {
-            values.add(node.item);
+        ArrayList<Task> tasks = new ArrayList<>();
+        Node node = first;
+        while (node != null) {
+            Task task = node.item;
+            tasks.add(task);
+            node = node.next;
         }
-        return (ArrayList<Task>) values.clone();
+        return tasks;
     }
 
     @Override
