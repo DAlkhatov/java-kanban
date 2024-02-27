@@ -21,7 +21,7 @@ class InMemoryTaskManagerTest {
     static SubTask subTask2;
 
     @BeforeEach
-    void beforeAll() {
+    void beforeEach() {
         taskManager = new InMemoryTaskManager();
         task = new Task(Status.NEW, "Task", "Description of the Task");
         taskManager.create(task);
@@ -90,8 +90,9 @@ class InMemoryTaskManagerTest {
     @DisplayName("Task должен быть удален по id")
     @Test
     void shouldRemoveTask() {
-        taskManager.removeTask(task.getId());
-        assertNull(taskManager.getTask(task.getId()));
+        int id = task.getId();
+        taskManager.removeTask(id);
+        assertNull(taskManager.getTask(id));
     }
 
     @DisplayName("ArrayList-ы с Эпиками должны быть одинаковые")
