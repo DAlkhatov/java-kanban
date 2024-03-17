@@ -7,28 +7,31 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private int seq;
-    private final AtomicInteger atomicSeq;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
-    private final InMemoryHistoryManager historyManager;
+    int seq;
+    final HashMap<Integer, Task> tasks;
+    final HashMap<Integer, Epic> epics;
+    final HashMap<Integer, SubTask> subTasks;
+    final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
         this.historyManager = new InMemoryHistoryManager();
-        this.atomicSeq = new AtomicInteger(0);
+    }
+
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager; // 3
+        this.tasks = new HashMap<>();
+        this.epics = new HashMap<>();
+        this.subTasks = new HashMap<>();
     }
 
     private int generateId() {
-        seq = atomicSeq.incrementAndGet();
-        return seq;
+        return ++seq;
     }
 
     public void updateEpicStatus(Epic epic) {
@@ -150,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(epic.getId());
             for (int i : epic.getSubtaskIdList()) {
                 SubTask s = subTasks.get(i);
-                s.setEpicId(0);
+                s.setEpicId(null);
             }
             removeAllSubtasksFromEpic(epic.getId());
         }
@@ -254,7 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getHistory() {
-        return historyManager.getTasks();
+        return (ArrayList<Task>) historyManager.getTasks();
     }
 
     @Override

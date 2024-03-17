@@ -7,19 +7,19 @@ import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private static class Node {
+    static class Node {
         Task item;
         Node next;
         Node prev;
 
-        public Node(Node prev, Task element, Node next) {
+        private Node(Node prev, Task element, Node next) {
             this.item = element;
             this.next = next;
             this.prev = prev;
         }
     }
 
-    HashMap<Integer, Node> history = new HashMap<>();
+    static HashMap<Integer, Node> history = new HashMap<>();
     Node first;
     Node last;
 

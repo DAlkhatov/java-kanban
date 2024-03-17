@@ -2,19 +2,14 @@ package service;
 
 public class Managers {
 
-    InMemoryTaskManager taskManager;
-    InMemoryHistoryManager historyManager;
-
     public Managers() {
-        this.taskManager = new InMemoryTaskManager();
-        this.historyManager = new InMemoryHistoryManager();
     }
 
     public TaskManager getDefault() {
-        return taskManager;
+        return new FileBackedTaskManager(getDefaultHistory());
     }
 
-    public HistoryManager getDefaultHistory() {
-        return historyManager;
+    public static HistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
     }
 }
