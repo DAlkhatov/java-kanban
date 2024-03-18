@@ -1,6 +1,9 @@
 package service;
 
+<<<<<<< HEAD
 import exeption.ManagerSaveException;
+=======
+>>>>>>> origin/sprint_7-solution-in-file-manager
 import model.*;
 
 import java.io.*;
@@ -15,6 +18,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static final String TASK_CSV = "resources/task.csv";
     public static File file = new File(TASK_CSV);
 
+<<<<<<< HEAD
+=======
+    public FileBackedTaskManager() {
+    }
+
+>>>>>>> origin/sprint_7-solution-in-file-manager
     public FileBackedTaskManager(HistoryManager historyManager) {
         this(historyManager, new File(TASK_CSV));
     }
@@ -332,3 +341,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 }
 
+<<<<<<< HEAD
+=======
+class ManagerSaveException extends RuntimeException {
+
+    public ManagerSaveException(String message) {
+        super(message);
+    }
+
+    public ManagerSaveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ManagerSaveException() {
+    }
+}
+>>>>>>> origin/sprint_7-solution-in-file-manager
