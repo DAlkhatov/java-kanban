@@ -13,17 +13,23 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static final String TASK_CSV = "resources/task.csv";
-    public static File file = new File(TASK_CSV);
-
-    public FileBackedTaskManager() {
-    }
+    public File file;
 
     public FileBackedTaskManager(HistoryManager historyManager) {
         this(historyManager, new File(TASK_CSV));
     }
 
+    public FileBackedTaskManager(File file) {
+        this(Managers.getDefaultHistory(), file);
+    }
+
+    public FileBackedTaskManager(HistoryManager historyManager, File file) {
+        super(historyManager);
+        this.file = file;
+    }
+
     public static void main(String[] args) {
-        FileBackedTaskManager fileManager1 = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager fileManager1 = FileBackedTaskManager.loadFromFile(new File(TASK_CSV));
 
         Task task = new Task(Status.DONE, "Task", "Description of Task");
         fileManager1.create(task);
@@ -35,7 +41,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         fileManager1.getEpics();
         fileManager1.getSubtasks();
 
-        FileBackedTaskManager fileManager2 = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager fileManager2 = FileBackedTaskManager.loadFromFile(new File(TASK_CSV));
         System.out.println(fileManager2.getTasks());
         System.out.println(fileManager2.getEpics());
         System.out.println(fileManager2.getSubtasks());
@@ -59,15 +65,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Task task = super.getTask(id);
         save();
         return task;
-    }
-
-    public FileBackedTaskManager(File file) {
-        this(Managers.getDefaultHistory(), file);
-    }
-
-    public FileBackedTaskManager(HistoryManager historyManager, File file) {
-        super(historyManager);
-        FileBackedTaskManager.file = file;
     }
 
     @Override
@@ -174,11 +171,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     void save() {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, UTF_8))) {
-            String firstString = "id,type,name,status,description,epic";
-            try (BufferedReader br = new BufferedReader(new FileReader(file, UTF_8))) {
-                String firstLine = String.valueOf(br.readLine());
-                if (!firstLine.equals(firstString)) {
-                    writer.append(firstString);
+            try {
+                if (file.length() == 0) {
+                    writer.append("id,type,name,status,description,epic");
                     writer.newLine();
                 }
             } catch (IOException e) {

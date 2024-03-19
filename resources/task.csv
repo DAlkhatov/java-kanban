@@ -1,12 +1,9 @@
 id,type,name,status,description,epic
 1,TASK,Task,DONE,Description of Task,null
 4,TASK,Task,DONE,Description of Task,null
-7,TASK,Task,DONE,Description of Task,null
 2,EPIC,Epic,IN_PROGRESS,Description of Epic,null
 5,EPIC,Epic,IN_PROGRESS,Description of Epic,null
-8,EPIC,Epic,IN_PROGRESS,Description of Epic,null
 3,SUBTASK,SubTask,IN_PROGRESS,Description of SubTask,2
 6,SUBTASK,SubTask,IN_PROGRESS,Description of SubTask,5
-9,SUBTASK,SubTask,IN_PROGRESS,Description of SubTask,8
 
-1,4,7,2,5,8,3,6,9
+1,4,2,5,3,6
