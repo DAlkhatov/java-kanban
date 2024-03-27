@@ -1,5 +1,6 @@
 package service;
 
+import exeption.NotFoundException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -10,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest {
 
@@ -37,12 +39,20 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldUpdateEpicStatus() {
         assertEquals(Status.NEW, epic.getStatus());
+
         subTask1.setStatus(Status.DONE);
         taskManager.updateEpicStatus(epic);
         assertEquals(Status.IN_PROGRESS, epic.getStatus());
+
         subTask2.setStatus(Status.DONE);
         taskManager.updateEpicStatus(epic);
         assertEquals(Status.DONE, epic.getStatus());
+
+        subTask1.setStatus(Status.IN_PROGRESS);
+        subTask2.setStatus(Status.IN_PROGRESS);
+        taskManager.updateEpicStatus(epic);
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+
         taskManager.removeAllSubtasksFromEpic(epic.getId());
         assertEquals(Status.NEW, epic.getStatus());
     }
@@ -92,7 +102,7 @@ class InMemoryTaskManagerTest {
     void shouldRemoveTask() {
         int id = task.getId();
         taskManager.removeTask(id);
-        assertNull(taskManager.getTask(id));
+        assertThrows(NotFoundException.class, () -> taskManager.getTask(id));
     }
 
     @DisplayName("ArrayList-ы с Эпиками должны быть одинаковые")
@@ -126,7 +136,7 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldRemoveEpic() {
         taskManager.removeEpic(epic.getId());
-        assertNull(taskManager.getTask(epic.getId()));
+        assertThrows(NotFoundException.class, () -> taskManager.getEpic(epic.getId()));
     }
 
 
