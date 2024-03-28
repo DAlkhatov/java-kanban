@@ -1,5 +1,6 @@
 package service;
 
+import exeption.ValidationException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -17,8 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TreeSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
     File file;
@@ -94,5 +96,32 @@ class FileBackedTaskManagerTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    @DisplayName("Проверка пересечения временных зон")
+    void shouldCheckForIntersectionOfTimeZones() {
+        SubTask s1 = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
+                LocalDateTime.of(2021, 1, 1, 9, 59), duration);
+        assertThrows(ValidationException.class, () -> fileManager.create(s1));
+
+        SubTask s2 = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
+                LocalDateTime.of(2020, 12, 31, 14, 1), duration);
+        assertThrows(ValidationException.class, () -> fileManager.create(s2));
+
+        SubTask s3 = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
+                LocalDateTime.of(2021, 1, 1, 10, 0), duration);
+        SubTask s4 = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
+                LocalDateTime.of(2020, 12, 31, 14, 0), duration);
+        assertDoesNotThrow(() -> fileManager.create(s3));
+        assertDoesNotThrow(() -> fileManager.create(s4));
+    }
+
+    @Test
+    @DisplayName("")
+    void should() {
+        TreeSet<Task> timeSet = fileManager.getPrioritizedTasks();
+        assertEquals(timeSet.getFirst(), task);
+        assertEquals(timeSet.getLast(), subTask);
     }
 }

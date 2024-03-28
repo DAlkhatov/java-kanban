@@ -41,14 +41,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Duration duration = Duration.ofHours(2);
 
         Task task = new Task(Status.DONE, "Task", "Description of Task",
-                LocalDateTime.of(2019, 1, 1, 0, 0), duration);
+                LocalDateTime.of(2022, 1, 1, 0, 0), duration);
         fileManager1.create(task);
         Epic epic = new Epic(Status.NEW, "Epic", "Description of Epic");
         fileManager1.create(epic);
         SubTask st = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
-                LocalDateTime.of(2018, 1, 1, 10, 5), duration);
+                LocalDateTime.of(2021, 1, 1, 10, 5), duration);
         SubTask st1 = new SubTask(Status.IN_PROGRESS, "SubTask1", "Description of SubTask1", epic.getId(),
-                LocalDateTime.of(2017, 3, 25, 10, 5), Duration.ofDays(3));
+                LocalDateTime.of(2020, 3, 25, 10, 5), Duration.ofDays(3));
         fileManager1.create(st);
         fileManager1.create(st1);
         fileManager1.getTasks();
@@ -80,12 +80,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public boolean isIntersection(Task t1, Task t2) {
-        return ((getStartEpochSecond(t1) < getStartEpochSecond(t2)) ||
+        return ((((getStartEpochSecond(t1) < getStartEpochSecond(t2)) ||
                 (getStartEpochSecond(t1) < getEndEpochSecond(t2))) &&
-                (getStartEpochSecond(t2) < getEndEpochSecond(t1)) ||
+                (getStartEpochSecond(t2) < getEndEpochSecond(t1))) ||
                 (((getStartEpochSecond(t2) < getStartEpochSecond(t1)) ||
                         (getStartEpochSecond(t2) < getEndEpochSecond(t1))) &&
-                        (getStartEpochSecond(t1) < getEndEpochSecond(t2)));
+                        (getStartEpochSecond(t1) < getEndEpochSecond(t2))));
     }
 
     public void add(Task task) {
@@ -94,19 +94,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ValidationException("Невозможно создать задачу из-за неверно указанного времени");
         }
     }
-
-/*    public void add(Task task) {
-        for (Task t : tasks.values()) {
-            if (!t.equals(task) && isIntersection(task, t)) {
-                throw new ValidationException("Невозможно создать подзадачу из-за неверно указанного времени");
-            }
-        }
-        for (SubTask s : subTasks.values()) {
-            if (!s.equals(task) && isIntersection(task, s)) {
-                throw new ValidationException("Невозможно создать подзадачу из-за неверно указанного времени");
-            }
-        }
-    }*/
 
     @Override
     public ArrayList<Task> getTasks() {
@@ -190,11 +177,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Task create(Task task) {
         add(task);
-/*        for (Task task1 : tasks.values()) {
-            if (!task1.equals(task) && isIntersection(task, task1)) {
-                throw new ValidationException("Невозможно создать подзадачу из-за неверно указанного времени");
-            }
-        }*/
         Task t = super.create(task);
         save();
         return t;

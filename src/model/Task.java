@@ -12,6 +12,13 @@ public class Task {
     private Duration duration;
     private LocalDateTime startTime;
 
+    public Task(Status status, String name, String description, LocalDateTime startTime, Duration duration) {
+        this.status = status;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime == null ? LocalDateTime.now() : startTime;
+        this.duration = duration == null ? Duration.ZERO : duration;
+    }
 
     public Task(Status status, String name, String description) {
         this.status = status;
@@ -19,14 +26,6 @@ public class Task {
         this.description = description;
         this.startTime = LocalDateTime.now();
         this.duration = Duration.ZERO;
-    }
-
-    public Task(Status status, String name, String description, LocalDateTime startTime, Duration duration) {
-        this.status = status;
-        this.name = name;
-        this.description = description;
-        this.startTime = startTime == null ? LocalDateTime.now() : startTime;
-        this.duration = duration == null ? Duration.ZERO : duration;
     }
 
     public void setDuration(Duration duration) {
