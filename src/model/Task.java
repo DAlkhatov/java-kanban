@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,11 +9,43 @@ public class Task {
     private Status status;
     private String name;
     private String description;
+    private Duration duration;
+    private LocalDateTime startTime;
+
+    public Task(Status status, String name, String description, LocalDateTime startTime, Duration duration) {
+        this.status = status;
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime == null ? LocalDateTime.now() : startTime;
+        this.duration = duration == null ? Duration.ZERO : duration;
+    }
 
     public Task(Status status, String name, String description) {
         this.status = status;
         this.name = name;
         this.description = description;
+        this.startTime = LocalDateTime.now();
+        this.duration = Duration.ZERO;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public Integer getEpicId() {
@@ -77,7 +111,9 @@ public class Task {
                 ", status=" + status +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", type ='" + getType() + '\'' +
+                ", type='" + getType() + '\'' +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
                 '}';
     }
 }

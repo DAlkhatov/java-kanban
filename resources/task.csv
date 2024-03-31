@@ -1,9 +1,7 @@
-id,type,name,status,description,epic
-1,TASK,Task,DONE,Description of Task,null
-4,TASK,Task,DONE,Description of Task,null
-2,EPIC,Epic,IN_PROGRESS,Description of Epic,null
-5,EPIC,Epic,IN_PROGRESS,Description of Epic,null
-3,SUBTASK,SubTask,IN_PROGRESS,Description of SubTask,2
-6,SUBTASK,SubTask,IN_PROGRESS,Description of SubTask,5
+id,type,name,status,description,epic,startTime,duration
+1,TASK,Task,DONE,Description of Task,null,01.01.2022 00:00,PT2H
+2,EPIC,Epic,IN_PROGRESS,Description of Epic,null,25.03.2020 10:05,PT72H
+3,SUBTASK,SubTask,DONE,Description of SubTask,2,01.01.2021 10:05,PT2H
+4,SUBTASK,SubTask1,IN_PROGRESS,Description of SubTask1,2,25.03.2020 10:05,PT72H
 
-1,4,2,5,3,6
+1,2,3,4
