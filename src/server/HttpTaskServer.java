@@ -27,7 +27,7 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String TASK_CSV = "resources/task.csv";
 
-    static private void writeResponse(HttpExchange exchange,
+    static void writeResponse(HttpExchange exchange,
                                       String responseString,
                                       int responseCode) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
@@ -37,7 +37,7 @@ public class HttpTaskServer {
         exchange.close();
     }
 
-    static private Status getStatus(String status) {
+    static Status getStatus(String status) {
         switch (status.toLowerCase()) {
             case "new" -> {
                 return Status.NEW;
@@ -54,7 +54,7 @@ public class HttpTaskServer {
         }
     }
 
-    static private LocalDateTime getStartTime(String startTime) {
+    static LocalDateTime getStartTime(String startTime) {
         String arrayOfDate = startTime.split("T")[0];
         String arrayOfTime = startTime.split("T")[1];
         String[] date = arrayOfDate.split("-");
@@ -68,7 +68,7 @@ public class HttpTaskServer {
         return LocalDateTime.of(year, month, day, hour, minutes);
     }
 
-    static private void getCase(HttpExchange exchange, String[] pathParts) throws IOException {
+    static void getCase(HttpExchange exchange, String[] pathParts) throws IOException {
         Task task;
         switch (pathParts[1]) {
             case "tasks":
@@ -112,7 +112,7 @@ public class HttpTaskServer {
     }
 
 
-    static private void postCase(HttpExchange exchange, Headers requestHeaders, String[] pathParts) throws IOException {
+    static void postCase(HttpExchange exchange, Headers requestHeaders, String[] pathParts) throws IOException {
         try {
             Task newTask = null;
             try {
@@ -159,7 +159,7 @@ public class HttpTaskServer {
         }
     }
 
-    static private void deleteCase(HttpExchange exchange, String[] pathParts) throws IOException {
+    static void deleteCase(HttpExchange exchange, String[] pathParts) throws IOException {
         switch (pathParts[1]) {
             case "tasks":
                 if (pathParts.length > 2) {
