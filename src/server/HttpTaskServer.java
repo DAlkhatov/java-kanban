@@ -20,16 +20,18 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private static FileBackedTaskManager fileManager;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String TASK_CSV = "resources/task.csv";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     static void writeResponse(HttpExchange exchange,
-                                      String responseString,
-                                      int responseCode) throws IOException {
+                              String responseString,
+                              int responseCode) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
             exchange.sendResponseHeaders(responseCode, 0);
             os.write(responseString.getBytes(DEFAULT_CHARSET));
@@ -55,29 +57,28 @@ public class HttpTaskServer {
     }
 
     static LocalDateTime getStartTime(String startTime) {
-        String arrayOfDate = startTime.split("T")[0];
-        String arrayOfTime = startTime.split("T")[1];
-        String[] date = arrayOfDate.split("-");
-        String[] time = arrayOfTime.split(":");
-
-        int year = Integer.parseInt(date[0]);
-        int month = Integer.parseInt(date[1]);
-        int day = Integer.parseInt(date[2]);
-        int hour = Integer.parseInt(time[0]);
-        int minutes = Integer.parseInt(time[1]);
-        return LocalDateTime.of(year, month, day, hour, minutes);
+        return LocalDateTime.parse(startTime, formatter);
     }
 
     static void getCase(HttpExchange exchange, String[] pathParts) throws IOException {
         Task task;
+        Integer id = null;
+        if (pathParts.length > 2) {
+            try {
+                id = Integer.parseInt(pathParts[2]);
+            } catch (NumberFormatException e) {
+                writeResponse(exchange, "Необходимо передать число, а не символ", 404);
+                return;
+            }
+        }
         switch (pathParts[1]) {
             case "tasks":
                 if (pathParts.length > 2) {
                     try {
-                        task = fileManager.getTask(Integer.parseInt(pathParts[2]));
+                        task = fileManager.getTask(id);
                         writeResponse(exchange, task.toString(), 200);
                     } catch (NotFoundException e) {
-                        writeResponse(exchange, "Такой задачи нет", 404);
+                        writeResponse(exchange, String.format("Нет задачи с id %d", id), 404);
                     }
                 } else {
                     writeResponse(exchange, fileManager.getTasks().toString(), 200);
@@ -89,7 +90,7 @@ public class HttpTaskServer {
                         task = fileManager.getEpic(Integer.parseInt(pathParts[2]));
                         writeResponse(exchange, task.toString(), 200);
                     } catch (NotFoundException e) {
-                        writeResponse(exchange, "Такого эпика нет", 404);
+                        writeResponse(exchange, String.format("Нет эпика с id %d", id), 404);
                     }
                 } else {
                     writeResponse(exchange, fileManager.getEpics().toString(), 200);
@@ -101,7 +102,7 @@ public class HttpTaskServer {
                         writeResponse(exchange, task.toString(), 200);
                         return;
                     } catch (NotFoundException e) {
-                        writeResponse(exchange, "Такой подзадачи нет", 404);
+                        writeResponse(exchange, String.format("Нет подзадачи с id %d", id), 404);
                     }
                 } else {
                     writeResponse(exchange, fileManager.getSubtasks().toString(), 200);
@@ -141,7 +142,13 @@ public class HttpTaskServer {
                 return;
             }
             if (pathParts.length > 2) {
-                int id = Integer.parseInt(pathParts[2]);
+                int id;
+                try {
+                    id = Integer.parseInt(pathParts[2]);
+                } catch (NumberFormatException e) {
+                    writeResponse(exchange, "Необходимо передать число, а не символ", 404);
+                    return;
+                }
                 newTask.setId(id);
                 try {
                     fileManager.updateTask(newTask);
