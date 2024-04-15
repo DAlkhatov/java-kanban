@@ -1,7 +1,6 @@
 id,type,name,status,description,epic,startTime,duration
-1,TASK,Task,DONE,Description of Task,null,01.01.2022 00:00,PT2H
-2,EPIC,Epic,IN_PROGRESS,Description of Epic,null,25.03.2020 10:05,PT72H
-3,SUBTASK,SubTask,DONE,Description of SubTask,2,01.01.2021 10:05,PT2H
-4,SUBTASK,SubTask1,IN_PROGRESS,Description of SubTask1,2,25.03.2020 10:05,PT72H
+1,TASK,task,DONE,descr,null,14.04.2024 19:40,PT0S
+2,TASK,task,DONE,descr,null,14.04.2024 19:38,PT0S
+3,TASK,task,DONE,descr,null,14.04.2024 19:40,PT0S
 
-1,2,3,4
+1

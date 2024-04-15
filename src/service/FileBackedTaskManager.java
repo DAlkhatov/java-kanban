@@ -36,35 +36,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public static void main(String[] args) {
-        FileBackedTaskManager fileManager1 = FileBackedTaskManager.loadFromFile(new File(TASK_CSV));
-        Duration duration = Duration.ofHours(2);
-
-        Task task = new Task(Status.DONE, "Task", "Description of Task",
-                LocalDateTime.of(2022, 1, 1, 0, 0), duration);
-        fileManager1.create(task);
-        Epic epic = new Epic(Status.NEW, "Epic", "Description of Epic");
-        fileManager1.create(epic);
-        SubTask st = new SubTask(Status.DONE, "SubTask", "Description of SubTask", epic.getId(),
-                LocalDateTime.of(2021, 1, 1, 10, 5), duration);
-        SubTask st1 = new SubTask(Status.IN_PROGRESS, "SubTask1", "Description of SubTask1", epic.getId(),
-                LocalDateTime.of(2020, 3, 25, 10, 5), Duration.ofDays(3));
-        fileManager1.create(st);
-        fileManager1.create(st1);
-        fileManager1.getTasks();
-        fileManager1.getEpics();
-        fileManager1.getSubtasks();
-
-        FileBackedTaskManager fileManager2 = FileBackedTaskManager.loadFromFile(new File(TASK_CSV));
-        System.out.println(fileManager2.getTasks());
-        System.out.println(fileManager2.getEpics());
-        System.out.println(fileManager2.getSubtasks());
-        System.out.println();
-        for (Task task1 : fileManager1.getPrioritizedTasks()) {
-            System.out.println(task1);
-        }
-    }
-
     public TreeSet<Task> getPrioritizedTasks() {
         prioritizedTasks.addAll(tasks.values());
         prioritizedTasks.addAll(subTasks.values());
@@ -293,9 +264,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     case TaskType.TASK -> historyManager.add(tasks.get(i));
                     case TaskType.EPIC -> historyManager.add(epics.get(i));
                     case TaskType.SUBTASK -> historyManager.add(subTasks.get(i));
-                    default -> {
-                        break;
-                    }
                 }
             }
         } catch (IOException e) {
@@ -344,7 +312,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return task;
     }
 
-    static String historyToString(HistoryManager manager) {
+    public static String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
         for (Task task : manager.getTasks()) {
             sb.append(task.getId());

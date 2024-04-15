@@ -19,6 +19,10 @@ public class InMemoryTaskManager implements TaskManager {
     final HashMap<Integer, SubTask> subTasks;
     final HistoryManager historyManager;
 
+    public HistoryManager getHistoryManager() {
+        return this.historyManager;
+    }
+
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
@@ -138,7 +142,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (epics == null) {
             throw new NotFoundException("Эпики не найдены");
         }
-        epics.values().forEach(historyManager::add);
+        for (Epic e : epics.values()) {
+            historyManager.add(e);
+        }
+        //epics.values().forEach(historyManager::add);
         ArrayList<Epic> epicList = new ArrayList<>(epics.values());
         return (ArrayList<Epic>) epicList.clone();
     }
